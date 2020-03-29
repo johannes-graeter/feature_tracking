@@ -20,10 +20,10 @@
   <depend>nodelet</depend>
   <depend>feature_tracking_core</depend>
   <depend>matches_msg_ros</depend>
-  <depend>cv_bridge</depend>
-  <depend>mrt_opencv</depend>
-  <depend>yaml-cpp</depend>
+  <depend>opencv</depend>
   <depend>opencv_apps</depend>
+  <depend>cv_bridge</depend>
+  <depend>yaml-cpp</depend>
   <depend>message_filters</depend>
 
   <depend>dynamic_reconfigure</depend>

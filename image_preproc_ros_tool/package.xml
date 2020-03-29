@@ -20,31 +20,13 @@
   <depend>rosinterface_handler</depend>
   <depend>roslib</depend>
   <depend>nodelet</depend>
-  <depend>mrt_opencv</depend>
+  <depend>opencv</depend>
   <depend>cv_bridge</depend>
   <depend>image_preproc</depend>
   <depend>image_transport</depend>
   <depend>pcl_ros</depend>
   <depend>pcl_conversions</depend>
   <depend>image_geometry</depend>
-  <!-- 
-    Documentation for dependencies:
-    <build_depend>            Build-time dependency required to build 
-                              this package, e.g. boost, opencv.
-    <build_export_depend>     Exported build-time dependency required to 
-                              build packages that depend on this package,
-                              e.g. boost, opencv.
-    <exec_depend>             Execution dependency required to run this 
-                              package, e.g. boost, opencv.
-    <depend>                  Build-time, exported build-time and execution
-                              dependency. This is a bundled synonym for
-                              <build_depend>, <build_export_depend> and
-                              <exec_depend>.
-  -->
-  <!-- 
-    Example:
-    <depend>mrt_opencv</depend> 
-  -->
   <test_depend>rostest</test_depend>
   <depend>message_filters</depend>
   <export>
