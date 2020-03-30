@@ -11,13 +11,25 @@ include(GatherDeps)
 #list(REMOVE_ITEM DEPENDEND_PACKAGES <package name 1> <package name 2> ...)
 find_package(AutoDeps REQUIRED COMPONENTS ${DEPENDEND_PACKAGES})
 
-FIND_PACKAGE(PythonInterp)
-FIND_PACKAGE(PythonLibs)
-#if(${PYTHON_VERSION_MAJOR} EQUAL 3)
-# FIND_PACKAGE(Boost COMPONENTS python3 numpy3 system)
-#else()
-FIND_PACKAGE(Boost COMPONENTS python numpy)
-#endif()
+# Manually resolve removed dependend packages
+#find_package(...)
+
+# Mark files or folders for display in IDEs
+mrt_add_to_ide(README.md .gitlab-ci.yml)
+
+########################
+## add python modules ##
+########################
+# This adds a python module if located under src/{PROJECT_NAME)
+mrt_python_module_setup()
+
+file(GLOB PROJECT_PYTHON_SOURCE_FILES_SRC RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "python_api/*.cpp")
+if (PROJECT_PYTHON_SOURCE_FILES_SRC)
+    # Add a cpp-python api library. Make sure there are no name collisions with python modules in this project
+    mrt_add_python_api( ${PROJECT_NAME}
+        FILES ${PROJECT_PYTHON_SOURCE_FILES_SRC}
+        )
+endif()
 
 ############################
 ## read source code files ##
@@ -40,11 +52,10 @@ endif()
 # CATKIN_DEPENDS: catkin_packages dependent projects also need
 # DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include ${mrt_EXPORT_INCLUDE_DIRS}
-  LIBRARIES ${LIBRARY_NAME} ${mrt_EXPORT_LIBRARIES}
-  CATKIN_DEPENDS ${catkin_EXPORT_DEPENDS}
-)
-
+    INCLUDE_DIRS include ${mrt_EXPORT_INCLUDE_DIRS}
+    LIBRARIES ${LIBRARY_NAME} ${mrt_EXPORT_LIBRARIES}
+    CATKIN_DEPENDS ${catkin_EXPORT_DEPENDS}
+    )
 
 ###########
 ## Build ##
@@ -54,34 +65,33 @@ include_directories(
     include/${PROJECT_NAME}
     ${mrt_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
-    ${BoostPython_INCLUDE_DIRS}
-    ${PYTHON_INCLUDE_DIRS} 
     )
 
 link_directories(
     ${mrt_LIBRARY_DIRS}
     ${catkin_LIBRARY_DIRS}
-    ${BoostPython_LIBRARY_DIRS}
-    ${PYTHON_LIBRARY_DIRS}
+    #${BoostPython_LIBRARY_DIRS}
+    #${PYTHON_LIBRARY_DIRS}
     )
-
-#add_library (matcher src/mono_matcher_binding.cpp)
 
 # Declare a cpp library
 #mrt_add_library(${PROJECT_NAME}
 mrt_add_library(matcher
     INCLUDES ${PROJECT_HEADER_FILES_INC} ${PROJECT_SOURCE_FILES_INC} 
     SOURCES ${PROJECT_SOURCE_FILES_SRC}
-    LIBRARIES boost_python boost_numpy
-    # LIBRARIES boost_python3 boost_numpy3
     )
-
-
-# Suppress prefix "lib" because Python does not allow this prefix
-set_target_properties(matcher PROPERTIES PREFIX "")
 
 #############
 ## Install ##
 #############
 # Install all targets, headers by default and scripts and other files if specified (folders or files)
 mrt_install(PROGRAMS scripts FILES res data)
+
+#############
+## Testing ##
+#############
+# Add test targets for cpp and python tests
+if (CATKIN_ENABLE_TESTING)
+    mrt_add_tests(test)
+    mrt_add_nosetests(test)
+endif()
