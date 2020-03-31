@@ -192,9 +192,9 @@ void wrapPushBackMask(TrackerLibViso &obj, np::ndarray const& img_array, np::nda
 // Converts a C++ vector to a python list
 // http://stackoverflow.com/questions/5314319/how-to-export-stdvector
 template <class T>
-struct VectorToListConverter                                                                             
+struct ListConverter                                                                             
 {   
-    static PyObject *convert(const std::vector<T> &vector)                                               
+    static PyObject *convert(const T& vector)                                               
     {
         boost::python::list *l = new boost::python::list();                                              
         for (const auto &el : vector)                                                                    
@@ -240,7 +240,10 @@ BOOST_PYTHON_MODULE(tracker_libviso)
 	.def(p::init<float, float, int>())
 	.def_readwrite("p1_", &Match::p1_);
     
-    p::class_<Tracklet, p::bases<std::deque<Match>>>("Tracklet", p::init<>())
+    using MatchDeque = std::deque<Match>;
+    p::to_python_converter<MatchDeque, ListConverter<std::deque<Match>>>();
+
+    p::class_<Tracklet, p::bases<MatchDeque>>("Tracklet", p::init<>())
         .def_readwrite("id_", &Tracklet::id_)
         .def_readwrite("age_", &Tracklet::age_);
 
@@ -248,7 +251,7 @@ BOOST_PYTHON_MODULE(tracker_libviso)
     //    class_<Matches>("Matches").def(vector_indexing_suite<Matches>());
     //    // "true" because tag_to_noddy has member get_pytye
     //    to_python_converter<Matches, toPythonList<Matcher::p_match>, false>();
-    p::to_python_converter<Tracklets, VectorToListConverter<Tracklet>>();
+    p::to_python_converter<Tracklets, ListConverter<std::vector<Tracklet>>>();
 
     // Choose one of the overloaded functions and cast to function pointer.
     void (TrackerLibViso::*getTracklets1)(TrackletVector&, int) = &TrackerLibViso::getTracklets;
