@@ -14,6 +14,8 @@
   <test_depend>gtest</test_depend>
   <depend>libboost-python-dev</depend> 
   <depend>viso2</depend> 
+  <depend>opencv</depend> 
+  <depend>feature_tracking_core</depend> 
   <export>
     <!-- Other tools can request additional information be placed here -->
   </export>
