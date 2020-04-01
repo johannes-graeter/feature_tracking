@@ -4,8 +4,19 @@ namespace feature_tracking {
 u_int64_t Tracklet::nextId = 0;
 u_int64_t StereoTracklet::nextId = 0;
 
+
 ImagePoint::ImagePoint(float u, float v, int index) : u_(u), v_(v), index_(index) {
     ;
+}
+
+
+bool ImagePoint::operator ==(const ImagePoint& other) const {
+    if (index_ == other.index_ &&
+        std::abs(u_-other.u_) < equality_threshold_ &&
+        std::abs(v_-other.v_) < equality_threshold_){
+	    return true;
+    }
+    return false;
 }
 
 
@@ -13,8 +24,14 @@ Match::Match(ImagePoint p) : p1_(p), x_(nullptr) {
     ;
 }
 
+
 Match::Match(float u, float v, int index) : p1_(u, v, index), x_(nullptr) {
     ;
+}
+
+
+bool Match::operator ==(const Match& other) const{
+    return this->p1_ == other.p1_;
 }
 
 

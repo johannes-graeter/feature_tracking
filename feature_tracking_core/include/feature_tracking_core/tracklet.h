@@ -43,9 +43,20 @@ struct ImagePoint {
     ///
     ImagePoint(float u = -1, float v = -1, int index = -1);
 
+    ///////////////////////////////////
+    /// \brief Equality operator
+    /// Needed for example in python binding
+    ///
+    /// \param ImagePoint    Point to compare to
+    bool operator ==(const ImagePoint& other) const;
+
     int index_; ///< index for feature identification
     float u_;   ///< u coordinate
     float v_;   ///< v coordinate
+
+    /// \brief Threshold for equality in image
+    /// coordinates.
+    static constexpr float equality_threshold_{0.1};
 };
 
 
@@ -72,6 +83,12 @@ public:
     ///
     Match(float u = -1, float v = -1, int index = -1);
 
+    ///////////////////////////////////
+    /// \brief Equality operator
+    /// Needed for example in python binding
+    ///
+    /// \param Match    Match to compare to
+    bool operator ==(const Match& other) const;
 
     ImagePoint p1_;                 ///< 2d point in image
     std::shared_ptr<WorldPoint> x_; ///< optional 3 world point
