@@ -189,6 +189,13 @@ void wrapPushBackMask(TrackerLibViso &obj, np::ndarray const& img_array, np::nda
     obj.pushBack(img, mask);
 }
 
+std::vector<Tracklet> wrapGetTracklets(const TrackerLibViso& obj)
+{
+     std::vector<Tracklet> tracklets;
+     obj.getTracklets(tracklets, 0);
+     return tracklets;
+}
+
 BOOST_PYTHON_MODULE(tracker_libviso)
 {
     np::initialize(); // have to put this in any module that uses Boost.NumPy
@@ -232,10 +239,11 @@ BOOST_PYTHON_MODULE(tracker_libviso)
     p::class_<Tracklets>("Tracklets").def(p::vector_indexing_suite<Tracklets>());
 
     // Choose one of the overloaded functions and cast to function pointer.
-    void (TrackerLibViso::*getTracklets1)(TrackletVector&, int) = &TrackerLibViso::getTracklets;
+    void (TrackerLibViso::*getTracklets1)(Tracklets&, int) = &TrackerLibViso::getTracklets;
     p::class_<TrackerLibViso, boost::noncopyable>("TrackerLibViso", p::init<TrackerLibViso::Parameters>())
         .def("get_tracklets", getTracklets1);
 
     p::def("push_back", &wrapPushBack);
     p::def("push_back_mask", &wrapPushBackMask);
+    p::def("get_tracklets", &wrapGetTracklets);
 }
