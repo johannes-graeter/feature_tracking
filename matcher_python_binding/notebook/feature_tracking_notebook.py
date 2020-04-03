@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # In[0]:
 # Script for demonstrating feature_tracking
+from matplotlib import pyplot as plt
 import numpy as np
-import matcher_python_binding.tracker_libviso as t
 import pykitti
+
+import matcher_python_binding.tracker_libviso as t
 
 # In[1]:
 basedir = '/limo_data/dataset'
@@ -22,3 +24,9 @@ for image in dataset.cam0:
 # In[4]:
 tracklets = t.get_tracklets(tracker)
 print("Number of tracklets={}".format(len(tracklets)))
+tracklets_numpy = [np.asarray([(point.p1_.u_, point.p1_.v_) for point in tracklet]) for tracklet in tracklets]
+
+# In[5]:
+plt.imshow(dataset.get_cam0(-1), cmap='gray')
+for t in tracklets_numpy:
+    plt.plot(t[:,0], t[:,1])
