@@ -22,100 +22,6 @@ using namespace feature_tracking;
 namespace p = boost::python;
 namespace np = p::numpy;
 
-// define function pointer
-// void (Matcher::*pushBack1)(uint8_t*, int32_t*, bool) = &Matcher::pushBack;
-// void (Matcher::*pushBack2)(uint8_t*, uint8_t*, int32_t*, bool) = &Matcher::pushBack;
-
-///**
-// *  Here's the actual converter.  Because we've separated the differences into the above
-// functions,
-// *  we can write a single template class that works for both matrix2 and vector2.
-// */
-// template <typename T, int N>
-// struct pointer_from_python {
-
-//    /**
-//     *  Register the converter.
-//     */
-//    pointer_from_python() {
-//        p::converter::registry::push_back(&convertible, &construct, p::type_id<T>());
-//    }
-
-//    /**
-//     *  Test to see if we can convert this to the desired type; if not return zero.
-//     *  If we can convert, returned pointer can be used by construct().
-//     */
-//    static void* convertible(PyObject* p) {
-//        try {
-//            p::object obj(p::handle<>(p::borrowed(p)));
-//            std::auto_ptr<np::ndarray> array(new np::ndarray(np::from_object(
-//                obj, np::dtype::get_builtin<double>(), N, N, np::ndarray::V_CONTIGUOUS)));
-//            if (array->shape(0) != 2)
-//                return 0;
-//            if (N == 2 && array->shape(1) != 2)
-//                return 0;
-//            return array.release();
-//        } catch (p::error_already_set& err) {
-//            p::handle_exception();
-//            return 0;
-//        }
-//    }
-
-//    /**
-//     *  Finish the conversion by initializing the C++ object into memory prepared by Boost.Python.
-//     */
-//    static void construct(PyObject* obj, p::converter::rvalue_from_python_stage1_data* data) {
-//        // Extract the array we passed out of the convertible() member function.
-//        std::auto_ptr<np::ndarray> array(reinterpret_cast<np::ndarray*>(data->convertible));
-//        // Find the memory block Boost.Python has prepared for the result.
-//        typedef p::converter::rvalue_from_python_storage<T> storage_t;
-//        storage_t* storage = reinterpret_cast<storage_t*>(data);
-//        // Use placement new to initialize the result.
-//        T* m_or_v = new (storage->storage.bytes) T();
-//        // Fill the result with the values from the NumPy array.
-//        copy_ndarray_to_mv2(*array, *m_or_v);
-//        // Finish up.
-//        data->convertible = storage->storage.bytes;
-//    }
-
-//};
-
-//// warpper for stereo
-// void wrap_matcher_pushBack(np::ndarray const& array0, np::ndarray const& array1, bool replace) {
-//    if (array0.get_dtype() != np::dtype::get_builtin<uint8_t>()) {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-//        p::throw_error_already_set();
-//    }
-
-//    if (array1.get_dtype() != np::dtype::get_builtin<uint8_t>()) {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect array data type");
-//        p::throw_error_already_set();
-//    }
-
-//    if (array0.get_nd() != 2) {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect number of dimensions");
-//        p::throw_error_already_set();
-//    }
-
-//    if (array1.get_nd() != 2) {
-//        PyErr_SetString(PyExc_TypeError, "Incorrect number of dimensions");
-//        p::throw_error_already_set();
-//    }
-
-//    int32_t row_stride = array0.strides(0) / sizeof(uint8_t);
-//    int32_t col_stride = array0.strides(1) / sizeof(uint8_t);
-
-//    if (row_stride != col_stride)
-//        throw std::runtime_error("col_stride!=row_stride");
-//    if (col_stride != array0.shape(1))
-//        throw std::runtime_error("col_stride!=cols");
-
-//    // width, height, stride
-//    int32_t dims[] = {array0.shape(1), array0.shape(0), col_stride};
-//    pushBack2(reinterpret_cast<uint8_t*>(array0.get_data()),
-//                 reinterpret_cast<uint8_t*>(array1.get_data()), dims, replace);
-//}
-
 // void    (Matcher::*matchFeatures1)(int32_t, Matrix*) = &Matcher::matchFeatures; //without
 // transform prior
 
@@ -189,7 +95,7 @@ void wrapPushBackMask(TrackerLibViso &obj, np::ndarray const& img_array, np::nda
     obj.pushBack(img, mask);
 }
 
-std::vector<Tracklet> wrapGetTracklets(const TrackerLibViso& obj)
+std::vector<Tracklet> wrapGetTracklets(TrackerLibViso& obj)
 {
      std::vector<Tracklet> tracklets;
      obj.getTracklets(tracklets, 0);
