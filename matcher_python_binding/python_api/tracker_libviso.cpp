@@ -41,7 +41,7 @@ namespace np = p::numpy;
 //        NumPy array be exactly what we're looking for - no conversion from nested
 //        sequences or arrays with other data types, because we want to modify it
 //        in-place. Modified example from boost_1_63_0/libs/python/example/numpy/wrap.cpp
-void wrapPushBack(TrackerLibViso &obj, np::ndarray const &array)
+void wrapPushBack(TrackerLibViso& obj, np::ndarray const& array)
 {
     if (array.get_dtype() != np::dtype::get_builtin<uint8_t>())
     {
@@ -146,7 +146,8 @@ BOOST_PYTHON_MODULE(tracker_libviso)
 
     // Choose one of the overloaded functions and cast to function pointer.
     void (TrackerLibViso::*getTracklets1)(Tracklets&, int) = &TrackerLibViso::getTracklets;
-    p::class_<TrackerLibViso, boost::noncopyable>("TrackerLibViso", p::init<TrackerLibViso::Parameters>())
+    p::class_<TrackerLibViso, boost::noncopyable>("TrackerLibViso", p::init<>())
+	.def(p::init<TrackerLibViso::Parameters>())
         .def("get_tracklets", getTracklets1);
 
     p::def("push_back", &wrapPushBack);

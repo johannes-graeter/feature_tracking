@@ -22,7 +22,7 @@ class TestVisoMonoMatcher(unittest.TestCase):
         params=matcher.MatcherParams()
         m=matcher.Matcher(params)
         
-        assert(len(m.getMatches())==0)
+        self.assertEqual(len(m.getMatches()), 0)
         
         test_dir = os.path.dirname(os.path.realpath(__file__)) 
         img0=cv2.imread(os.path.join(test_dir, "000106.png"),0)
