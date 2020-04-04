@@ -3,7 +3,7 @@ import os
 import unittest
 
 import cv2
-import matcher_python_binding.tracker_libviso as t
+import feature_tracking_core.tracker_libviso as t
 import numpy as np
 
 class TestFeatureTracking(unittest.TestCase):
@@ -18,6 +18,7 @@ class TestFeatureTracking(unittest.TestCase):
 
          tracklets = t.get_tracklets(self.tracker)
          print("Number of tracklets={}".format(len(tracklets)))
+         self.assertEqual(len(tracklets), 3138)
 
 if __name__ == '__main__':
     unittest.main()

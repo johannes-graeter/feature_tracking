@@ -22,25 +22,11 @@ using namespace feature_tracking;
 namespace p = boost::python;
 namespace np = p::numpy;
 
-// void    (Matcher::*matchFeatures1)(int32_t, Matrix*) = &Matcher::matchFeatures; //without
-// transform prior
-
-// not yet implemented in boost
-//    // tell the vector indexing suite not to use operator == since undefined
-//    namespace boost { namespace python{namespace indexing {
-//    template<>
-//    struct value_traits<Matcher::p_match> : public value_traits<int>
-//    {
-//        static bool const equality_comparable = false;
-//        static bool const lessthan_comparable = false;
-//    };
-//    }}}
-
-///@brief Wrap the push back call of matcher.
-//        It requires that the passed
-//        NumPy array be exactly what we're looking for - no conversion from nested
-//        sequences or arrays with other data types, because we want to modify it
-//        in-place. Modified example from boost_1_63_0/libs/python/example/numpy/wrap.cpp
+///@brief Wrap the push back call of tracker.
+///       It requires that the passed NumPy array be exactly what we're 
+///       looking for - no conversion from nested sequences or arrays with 
+///       other data types, because we want to modify it in-place. 
+///       Modified example from boost_1_63_0/libs/python/example/numpy/wrap.cpp
 void wrapPushBack(TrackerLibViso& obj, np::ndarray const& array)
 {
     if (array.get_dtype() != np::dtype::get_builtin<uint8_t>())
@@ -53,11 +39,9 @@ void wrapPushBack(TrackerLibViso& obj, np::ndarray const& array)
         PyErr_SetString(PyExc_TypeError, "Incorrect number of dimensions");
         p::throw_error_already_set();
     }
-
     int32_t height = array.shape(0);
     int32_t width = array.shape(1);
     int32_t num_channels = array.shape(2);
-
     cv::Mat img(height, width, CV_8UC(num_channels), reinterpret_cast<uint8_t *>(array.get_data()));
     obj.pushBack(img);
 }

@@ -13,7 +13,8 @@
   <build_depend>mrt_cmake_modules</build_depend>
   <test_depend>gtest</test_depend>
   <depend>viso2</depend>
-  <depend>mrt_opencv</depend>
+  <depend>libopencv-dev</depend>
+  <depend>libboost-python-dev</depend>
 
   <!-- 
     Documentation for dependencies:

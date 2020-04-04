@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pykitti
 
-import matcher_python_binding.tracker_libviso as t
+import feature_tracking_core.tracker_libviso as t
 
 # In[1]:
 basedir = '/limo_data/dataset'
